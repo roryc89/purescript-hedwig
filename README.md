@@ -121,7 +121,8 @@ main = do
   H.mount "main" {
     init: init :> [],
     update: \msg model -> update msg model :> [],
-    view
+    view,
+    inputs: []
   }
 ```
 
