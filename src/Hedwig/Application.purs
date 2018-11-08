@@ -3,7 +3,7 @@ module Hedwig.Application where
 import Prelude
 
 import Data.Either (Either(..))
-import Data.Foldable (for_)
+import Data.Foldable (for_, traverse_)
 import Data.Maybe (Maybe(..))
 import Data.Nullable as Nullable
 import Data.Tuple (Tuple(..))
@@ -13,6 +13,7 @@ import Effect.Aff as Aff
 import Effect.Ref as Ref
 import Hedwig.Foreign (Html)
 import Hedwig.Foreign as Foreign
+import Signal (Signal, runSignal)
 import Unsafe.Coerce (unsafeCoerce)
 import Web.DOM (Element)
 
@@ -25,7 +26,8 @@ type View model msg = model -> Html msg
 type Application model msg = {
   init :: Init model msg,
   update :: Update model msg,
-  view :: View model msg
+  view :: View model msg,
+  inputs :: Array (Signal msg)
 }
 
 mount :: forall model msg. String -> Application model msg -> Effect Unit
@@ -69,8 +71,10 @@ mount' el app = do
     setModel newModel = do
       Ref.write newModel model
       render
+
   Foreign.devtools.subscribe setModel
   start
+  traverse_ (runSignal <<< map send) app.inputs
 
 find :: String -> Effect (Maybe Element)
 find selector = Nullable.toMaybe <$> Foreign.querySelector selector

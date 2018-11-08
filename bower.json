@@ -14,7 +14,8 @@
     "purescript-web-dom": "^1.0.0",
     "purescript-web-html": "^1.0.0",
     "purescript-nullable": "^4.0.0",
-    "purescript-aff": "^5.0.1"
+    "purescript-aff": "^5.0.1",
+    "purescript-signal": "^10.1.0"
   },
   "devDependencies": {
     "purescript-psci-support": "^4.0.0",
